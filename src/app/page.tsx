@@ -5,6 +5,7 @@ import GitHubCalendar from '@/components/GitHubCalendar';
 import GitHubCard from '@/components/GitHubCard';
 import GitHubChart from '@/components/GitHubChart';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface GitHubUser {
   avatar_url: string;
@@ -26,7 +27,7 @@ export default function Home() {
 
   const fetchGitHubData = async () => {
     if (!username.trim()) {
-      setError('Please enter a username');
+      setError('Please enter a GitHub username');
       return;
     }
 
@@ -40,7 +41,9 @@ export default function Home() {
       }
       const data = await response.json();
       setUserData(data);
-    } catch (err: any) {
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (err: any) {
       setError(err.message);
       setUserData(null);
     } finally {
@@ -55,33 +58,36 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16 px-4 flex flex-col justify-between">
+      <div className="max-w-4xl mx-auto w-full">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">
             GitHub Analyzer
           </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
+            Explore GitHub profiles with charts and insights
+          </p>
         </div>
 
-        <div className="flex gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row gap-4 mb-8 items-center justify-center">
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Enter GitHub username"
-            className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
+            placeholder="e.g., jaydip-satani"
+            className="w-full sm:w-2/3 px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition"
             aria-label="GitHub username"
           />
           <button
             onClick={fetchGitHubData}
             disabled={loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
-              <span className="flex items-center">
+              <span className="flex items-center justify-center gap-2">
                 <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  className="animate-spin h-5 w-5 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -110,10 +116,10 @@ export default function Home() {
 
         {error && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="text-red-500 text-center mb-4 p-3 bg-red-100 dark:bg-red-900/30 rounded-lg"
+            exit={{ opacity: 0, y: -8 }}
+            className="text-red-600 dark:text-red-400 text-center mb-4 bg-red-100 dark:bg-red-900/40 p-3 rounded-lg"
           >
             {error}
           </motion.div>
@@ -121,9 +127,10 @@ export default function Home() {
 
         {userData && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-6"
           >
             <GitHubCard userData={userData} />
             <GitHubChart
@@ -135,6 +142,22 @@ export default function Home() {
           </motion.div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p>
+          Made with ❤️ by{' '}
+          <Link
+            href="https://jaydipsatani.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            Jaydip Satani
+          </Link>{' '}
+          &middot; GIT-SPECT &copy; {new Date().getFullYear()}
+        </p>
+      </footer>
     </main>
   );
 }
